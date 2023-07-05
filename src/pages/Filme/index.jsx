@@ -34,6 +34,23 @@ function Filme() {
       //Tudo o que é dependecia fora do useEffect, deve ser passado para "observar"
     }, [id, navigation]); 
 
+    function salvarFilme(){
+      const minhaLista = localStorage.getItem('@filmes');
+
+      let favoritos = JSON.parse(minhaLista) || [];
+
+      //Verifica se dentro da lista, possui algum que se encaixa na condição
+      const hasFilme = favoritos.some(filmeSalvo => filmeSalvo.id === filme.id); 
+      if(hasFilme) {
+        alert('Filme já está na lista');
+        return;
+      }
+
+      favoritos.push(filme);
+
+      localStorage.setItem("@filmes", JSON.stringify(favoritos));
+    }
+
     if(loading){
       return(
         <div className="filme-info">
@@ -52,9 +69,9 @@ function Filme() {
       <strong>Avaliação: {filme.vote_average} / 10</strong>
 
       <div className="area-buttons">
-        <button>Salvar</button>
+        <button onClick={salvarFilme}>Salvar</button>
         <button>
-          <a rel="external noreferrer" href={`https://youtube.com/results?search_query=${filme.title} Trailer`} target="_blank">
+          <a rel="external" target="blank" href={`https://youtube.com/results?search_query=${filme.title} Trailer`}>
             Trailer
           </a>
         </button>

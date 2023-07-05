@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import './filme.css';
 
@@ -8,6 +8,7 @@ function Filme() {
   const { id } = useParams();
   const [filme, setFilme] = useState();
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigate();
 
   useEffect(() => {
     async function loadFilme(){
@@ -19,8 +20,9 @@ function Filme() {
         }).then((response) => {
           setFilme(response.data);
           setLoading(false);
-        }).catch((error) => {
-          console.log(error)
+        }).catch(() => {
+          navigation("/", { replace: true });
+          return; //Para a execução do componente
         });
       }
 
@@ -29,7 +31,8 @@ function Filme() {
       return () => {
         //Encerra o componente
       }
-    }, []);
+      //Tudo o que é dependecia fora do useEffect, deve ser passado para "observar"
+    }, [id, navigation]); 
 
     if(loading){
       return(
@@ -51,7 +54,7 @@ function Filme() {
       <div className="area-buttons">
         <button>Salvar</button>
         <button>
-          <a href="">
+          <a rel="external noreferrer" href={`https://youtube.com/results?search_query=${filme.title} Trailer`} target="_blank">
             Trailer
           </a>
         </button>
